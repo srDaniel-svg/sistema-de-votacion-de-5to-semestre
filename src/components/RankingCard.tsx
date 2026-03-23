@@ -18,9 +18,9 @@ const RankingCard = ({ rank, name, role, image, className, onClick }: RankingCar
       className={cn("relative group cursor-pointer z-10", className)}
       onClick={onClick}
     >
-      {/* Shape Container */}
+      {/* Shape Container: Skewed on desktop, rounded on mobile */}
       <div className="relative overflow-hidden transform md:-skew-x-12 bg-gray-200 border-r border-white/20 group-hover:z-20 transition-all duration-300 h-56 sm:h-80 shadow-xl rounded-xl md:rounded-none">
-        {/* Image */}
+        {/* Image: Un-skewed on desktop */}
         <div className="absolute inset-0 transform md:skew-x-12 md:scale-150">
           <img 
             src={image} 
