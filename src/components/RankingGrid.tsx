@@ -1,31 +1,37 @@
 "use client";
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import RankingCard from './RankingCard';
 import BackgroundX from './BackgroundX';
 import { cn } from "@/lib/utils";
+import { supabase } from "@/integrations/supabase/client";
 
 interface RankingGridProps {
   className?: string;
   showBackgroundX?: boolean;
 }
 
-const TOP_STUDENTS = [
-  { rank: "01", name: "Juan Manuel Terrazas", role: "Software Architect", image: "https://i.postimg.cc/52fbMfLK/Whats-App-Image-2026-03-17-at-19-11-53-(2).jpg" },
-  { rank: "02", name: "Maria Gomez", role: "Data Scientist", image: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=800&h=1200&fit=crop" },
-  { rank: "03", name: "Carlos Paez", role: "Cybersecurity", image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=800&h=1200&fit=crop" },
-  { rank: "04", name: "Lucia Torrez", role: "AI Researcher", image: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=800&h=1200&fit=crop" },
-  { rank: "05", name: "Juan Mendez", role: "Fullstack Dev", image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=800&h=1200&fit=crop" },
-  { rank: "06", name: "Elena Rios", role: "Cloud Engineer", image: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=800&h=1200&fit=crop" },
-  { rank: "07", name: "Roberto Soliz", role: "Mobile Expert", image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=800&h=1200&fit=crop" },
-  { rank: "08", name: "Sofia Luna", role: "UX Designer", image: "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=800&h=1200&fit=crop" },
-  { rank: "09", name: "Diego Vaca", role: "DevOps Lead", image: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=800&h=1200&fit=crop" },
-  { rank: "10", name: "Ana Belen", role: "Blockchain Dev", image: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=800&h=1200&fit=crop" },
-];
-
 const RankingGrid = ({ className, showBackgroundX = true }: RankingGridProps) => {
   const navigate = useNavigate();
+  const [candidates, setCandidates] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchCandidates = async () => {
+      const { data } = await supabase
+        .from('candidates')
+        .select('*')
+        .order('rank', { ascending: true });
+      
+      if (data) setCandidates(data);
+      setLoading(false);
+    };
+
+    fetchCandidates();
+  }, []);
+
+  if (loading) return <div className="py-20 text-center font-black italic text-gray-400">CARGANDO RANKING...</div>;
 
   return (
     <section className={cn("relative overflow-hidden", className)}>
@@ -44,30 +50,36 @@ const RankingGrid = ({ className, showBackgroundX = true }: RankingGridProps) =>
           </div>
 
           <div className="flex flex-col gap-2">
-            {/* Fila 1 */}
-            <div className="flex items-center justify-center -space-x-4 md:-space-x-8">
-              <div className="hidden md:block w-40 h-80 bg-black/20 backdrop-blur-sm transform -skew-x-12 border-x border-white/10" />
-              {TOP_STUDENTS.slice(0, 5).map((student) => (
+            {/* Fila 1 (Top 1-5) */}
+            <div className="flex flex-wrap items-center justify-center -space-x-4 md:-space-x-8">
+              <div className="hidden lg:block w-40 h-80 bg-black/5 backdrop-blur-sm transform -skew-x-12 border-x border-black/5" />
+              {candidates.slice(0, 5).map((student) => (
                 <RankingCard 
-                  key={student.rank} 
-                  {...student} 
-                  className="w-full max-w-[220px]"
+                  key={student.id} 
+                  rank={student.rank}
+                  name={student.name}
+                  role={student.description || "Candidato"}
+                  image={student.image_url}
+                  className="w-full max-w-[180px] sm:max-w-[220px]"
                   onClick={() => navigate(`/character/${student.rank}`)}
                 />
               ))}
             </div>
 
-            {/* Fila 2 */}
-            <div className="flex items-center justify-center -space-x-4 md:-space-x-8">
-              {TOP_STUDENTS.slice(5, 10).map((student) => (
+            {/* Fila 2 (Top 6-10) */}
+            <div className="flex flex-wrap items-center justify-center -space-x-4 md:-space-x-8">
+              {candidates.slice(5, 10).map((student) => (
                 <RankingCard 
-                  key={student.rank} 
-                  {...student} 
-                  className="w-full max-w-[220px]"
+                  key={student.id} 
+                  rank={student.rank}
+                  name={student.name}
+                  role={student.description || "Candidato"}
+                  image={student.image_url}
+                  className="w-full max-w-[180px] sm:max-w-[220px]"
                   onClick={() => navigate(`/character/${student.rank}`)}
                 />
               ))}
-              <div className="hidden md:block w-40 h-80 bg-black/20 backdrop-blur-sm transform -skew-x-12 border-x border-white/10" />
+              <div className="hidden lg:block w-40 h-80 bg-black/5 backdrop-blur-sm transform -skew-x-12 border-x border-black/5" />
             </div>
           </div>
         </div>
