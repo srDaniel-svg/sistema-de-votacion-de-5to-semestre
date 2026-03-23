@@ -16,7 +16,6 @@ const CharacterPage = () => {
   const [student, setStudent] = useState<any>(null);
   const [user, setUser] = useState<any>(null);
 
-  // Función para convertir cualquier URL de YouTube al formato /embed/
   const getEmbedUrl = (url: string) => {
     if (!url) return "";
     if (url.includes("embed/")) return url;
@@ -62,19 +61,23 @@ const CharacterPage = () => {
 
   const videoUrl = getEmbedUrl(student.video_url);
   const bgVideoUrl = getEmbedUrl(student.bg_video_url);
+  const videoId = bgVideoUrl.split('/').pop()?.split('?')[0];
 
   return (
     <div className="min-h-screen bg-black text-white overflow-x-hidden">
       <VideoModal isOpen={isVideoOpen} onClose={() => setIsVideoOpen(false)} videoUrl={videoUrl} />
 
+      {/* Video de Fondo Optimizado para Móvil */}
       <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden">
-        <iframe
-          key={bgVideoUrl}
-          src={`${bgVideoUrl}?controls=0&showinfo=0&rel=0&autoplay=1&loop=1&mute=1&playlist=${bgVideoUrl.split('/').pop()}`}
-          className="absolute top-1/2 left-1/2 w-[200%] h-[150%] md:w-[150%] -translate-x-1/2 -translate-y-1/2 border-none opacity-30 grayscale contrast-125"
-          allow="autoplay; encrypted-media; fullscreen"
-        />
-        <div className="absolute inset-0 bg-gradient-to-b from-black/80 via-transparent to-black" />
+        {bgVideoUrl && (
+          <iframe
+            key={bgVideoUrl}
+            src={`${bgVideoUrl}?controls=0&showinfo=0&rel=0&autoplay=1&loop=1&mute=1&playlist=${videoId}&playsinline=1&enablejsapi=1`}
+            className="absolute top-1/2 left-1/2 w-[300%] h-[100%] md:w-[150%] md:h-[150%] -translate-x-1/2 -translate-y-1/2 border-none opacity-40 grayscale contrast-125"
+            allow="autoplay; encrypted-media; fullscreen; picture-in-picture"
+          />
+        )}
+        <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-transparent to-black" />
       </div>
 
       <div className="relative z-10 min-h-screen w-full flex flex-col">

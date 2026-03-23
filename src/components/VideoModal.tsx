@@ -12,6 +12,11 @@ interface VideoModalProps {
 const VideoModal = ({ isOpen, onClose, videoUrl }: VideoModalProps) => {
   if (!isOpen) return null;
 
+  // Añadir parámetros de compatibilidad si no los tiene
+  const finalUrl = videoUrl.includes('?') 
+    ? `${videoUrl}&autoplay=1&playsinline=1` 
+    : `${videoUrl}?autoplay=1&playsinline=1`;
+
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/95 backdrop-blur-md animate-in fade-in duration-300">
       <button 
@@ -24,10 +29,10 @@ const VideoModal = ({ isOpen, onClose, videoUrl }: VideoModalProps) => {
       <div className="relative w-full max-w-6xl aspect-video px-4 md:px-10 animate-in zoom-in-95 duration-300">
         <div className="w-full h-full border border-white/10 shadow-[0_0_50px_rgba(0,0,0,0.5)] relative">
           <iframe 
-            src={videoUrl}
+            src={finalUrl}
             className="w-full h-full border-none" 
-            allow="autoplay; fullscreen; encrypted-media"
-            scrolling="no"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen"
+            allowFullScreen
           />
           
           <div className="absolute -top-1 -left-1 w-4 h-4 border-t-2 border-l-2 border-red-600" />
