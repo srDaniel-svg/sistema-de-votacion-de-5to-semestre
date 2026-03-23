@@ -38,30 +38,48 @@ const RankingGrid = ({ className, showBackgroundX = true }: RankingGridProps) =>
   return (
     <section className={cn("relative overflow-hidden", className)}>
       <div className="relative py-12 md:py-24">
-        {showBackgroundX && <BackgroundX />}
+        {showBackgroundX && <div className="hidden md:block"><BackgroundX /></div>}
         
         <div className="max-w-[1400px] mx-auto px-4">
-          <div className="mb-12 md:mb-20 relative">
+          <div className="mb-8 md:mb-20 relative">
             <h2 className={cn(
-              "text-5xl md:text-9xl font-black absolute -top-8 md:-top-12 left-0 select-none tracking-tighter",
+              "text-5xl md:text-9xl font-black absolute -top-6 md:-top-12 left-0 select-none tracking-tighter",
               isDark ? "opacity-10 text-white" : "opacity-5 text-black"
             )}>
-              CHARACTER
+              RANKING
             </h2>
             <h2 className={cn(
-              "text-3xl md:text-6xl font-black relative z-10 italic flex items-center gap-3 md:gap-4",
+              "text-2xl md:text-6xl font-black relative z-10 italic flex items-center gap-3 md:gap-4",
               isDark ? "text-white" : "text-black"
             )}>
               <span className="w-8 md:w-12 h-1 bg-red-600" />
-              TOP <span className="text-red-600">SISTEMAS</span>
+              TOP <span className="text-red-600">CANDIDATOS</span>
             </h2>
           </div>
 
-          <div className="flex flex-col gap-4 md:gap-2">
-            {/* Fila 1 (Top 1-5) */}
-            <div className="flex flex-wrap items-center justify-center -space-x-2 sm:-space-x-4 md:-space-x-8">
+          {/* Mobile Grid: Simple and Fast */}
+          <div className="grid grid-cols-2 gap-3 md:hidden">
+            {candidates.map((student) => (
+              <RankingCard 
+                key={student.id} 
+                rank={student.rank}
+                name={student.name}
+                role={student.description || "Candidato"}
+                image={student.image_url}
+                className="w-full"
+                onClick={() => {
+                  navigate(`/character/${student.rank}`);
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                }}
+              />
+            ))}
+          </div>
+
+          {/* Desktop Layout: Complex and Stylized */}
+          <div className="hidden md:flex flex-col gap-2">
+            <div className="flex flex-wrap items-center justify-center -space-x-8">
               <div className={cn(
-                "hidden lg:block w-40 h-80 backdrop-blur-sm transform -skew-x-12 border-x",
+                "w-40 h-80 backdrop-blur-sm transform -skew-x-12 border-x",
                 isDark ? "bg-white/5 border-white/5" : "bg-black/5 border-black/5"
               )} />
               {candidates.slice(0, 5).map((student) => (
@@ -71,7 +89,7 @@ const RankingGrid = ({ className, showBackgroundX = true }: RankingGridProps) =>
                   name={student.name}
                   role={student.description || "Candidato"}
                   image={student.image_url}
-                  className="w-[45%] sm:w-full max-w-[160px] sm:max-w-[220px] mb-4 sm:mb-0"
+                  className="max-w-[220px]"
                   onClick={() => {
                     navigate(`/character/${student.rank}`);
                     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -80,8 +98,7 @@ const RankingGrid = ({ className, showBackgroundX = true }: RankingGridProps) =>
               ))}
             </div>
 
-            {/* Fila 2 (Top 6-10) */}
-            <div className="flex flex-wrap items-center justify-center -space-x-2 sm:-space-x-4 md:-space-x-8">
+            <div className="flex flex-wrap items-center justify-center -space-x-8">
               {candidates.slice(5, 10).map((student) => (
                 <RankingCard 
                   key={student.id} 
@@ -89,7 +106,7 @@ const RankingGrid = ({ className, showBackgroundX = true }: RankingGridProps) =>
                   name={student.name}
                   role={student.description || "Candidato"}
                   image={student.image_url}
-                  className="w-[45%] sm:w-full max-w-[160px] sm:max-w-[220px] mb-4 sm:mb-0"
+                  className="max-w-[220px]"
                   onClick={() => {
                     navigate(`/character/${student.rank}`);
                     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -97,7 +114,7 @@ const RankingGrid = ({ className, showBackgroundX = true }: RankingGridProps) =>
                 />
               ))}
               <div className={cn(
-                "hidden lg:block w-40 h-80 backdrop-blur-sm transform -skew-x-12 border-x",
+                "w-40 h-80 backdrop-blur-sm transform -skew-x-12 border-x",
                 isDark ? "bg-white/5 border-white/5" : "bg-black/5 border-black/5"
               )} />
             </div>
