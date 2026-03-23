@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useMemo } from 'react';
-import { Trash2, BarChart3, Users, ShieldCheck, Edit3, Save, X, Heart } from 'lucide-react';
+import { Trash2, BarChart3, Users, ShieldCheck, Edit3, Save, X, Heart, Image as ImageIcon } from 'lucide-react';
 import Navbar from '@/components/Navbar';
 import { showSuccess, showError } from '@/utils/toast';
 import { supabase } from "@/integrations/supabase/client";
@@ -114,12 +114,12 @@ const AdminDashboard = () => {
             <div className="py-20 text-center font-black italic text-gray-300 animate-pulse">CARGANDO DATOS...</div>
           ) : (
             <div className="grid grid-cols-1 gap-4">
-              {/* Desktop Header (Hidden on Mobile) */}
+              {/* Desktop Header */}
               <div className="hidden md:grid grid-cols-12 gap-4 px-8 py-4 bg-gray-900 text-white rounded-2xl text-[10px] font-black uppercase tracking-widest">
                 <div className="col-span-1">Rank</div>
                 <div className="col-span-4">Candidato</div>
-                <div className="col-span-2 text-center">Votos</div>
-                <div className="col-span-3">Multimedia</div>
+                <div className="col-span-1 text-center">Votos</div>
+                <div className="col-span-4">Multimedia & Foto</div>
                 <div className="col-span-2 text-right">Acciones</div>
               </div>
 
@@ -138,39 +138,60 @@ const AdminDashboard = () => {
 
                     {/* Candidate Info */}
                     <div className="col-span-4 flex items-center gap-4 mb-4 md:mb-0">
-                      <img src={c.image_url} className="hidden md:block w-12 h-12 rounded-xl object-cover" alt="" />
+                      <img src={editingId === c.id ? editForm.image_url : c.image_url} className="hidden md:block w-12 h-12 rounded-xl object-cover border border-gray-100" alt="" />
                       <div className="flex-1">
                         {editingId === c.id ? (
-                          <Input 
-                            value={editForm.name} 
-                            onChange={e => setEditForm({...editForm, name: e.target.value})} 
-                            className="h-10 rounded-xl text-sm font-bold"
-                          />
+                          <div className="space-y-2">
+                            <Input 
+                              value={editForm.name} 
+                              onChange={e => setEditForm({...editForm, name: e.target.value})} 
+                              className="h-9 rounded-xl text-sm font-bold"
+                              placeholder="Nombre"
+                            />
+                            <Input 
+                              value={editForm.description} 
+                              onChange={e => setEditForm({...editForm, description: e.target.value})} 
+                              className="h-8 rounded-xl text-[10px] font-medium"
+                              placeholder="Descripción"
+                            />
+                          </div>
                         ) : (
-                          <p className="font-black text-gray-900 uppercase italic truncate">{c.name}</p>
+                          <>
+                            <p className="font-black text-gray-900 uppercase italic truncate">{c.name}</p>
+                            <p className="text-[10px] text-gray-400 font-bold uppercase tracking-tighter truncate">{c.description || 'Sin descripción'}</p>
+                          </>
                         )}
-                        <p className="text-[10px] text-gray-400 font-bold uppercase tracking-tighter truncate">{c.description || 'Sin descripción'}</p>
                       </div>
                     </div>
 
-                    {/* Votes (Mobile Friendly) */}
-                    <div className="col-span-2 flex items-center justify-between md:justify-center mb-4 md:mb-0 bg-gray-50 md:bg-transparent p-3 md:p-0 rounded-xl">
-                      <span className="text-[10px] font-black text-gray-400 uppercase md:hidden">Votos Recibidos</span>
+                    {/* Votes */}
+                    <div className="col-span-1 flex items-center justify-between md:justify-center mb-4 md:mb-0 bg-gray-50 md:bg-transparent p-3 md:p-0 rounded-xl">
+                      <span className="text-[10px] font-black text-gray-400 uppercase md:hidden">Votos</span>
                       <div className="flex items-center gap-2">
                         <Heart size={14} className="text-red-500 fill-red-500" />
                         <span className="font-black text-gray-900">{c.votes || 0}</span>
                       </div>
                     </div>
 
-                    {/* Multimedia Links */}
-                    <div className="col-span-3 mb-4 md:mb-0">
+                    {/* Multimedia & Image URL */}
+                    <div className="col-span-4 mb-4 md:mb-0">
                       {editingId === c.id ? (
                         <div className="space-y-2">
-                          <Input value={editForm.video_url} onChange={e => setEditForm({...editForm, video_url: e.target.value})} placeholder="URL Video" className="h-8 text-[10px]" />
-                          <Input value={editForm.bg_video_url} onChange={e => setEditForm({...editForm, bg_video_url: e.target.value})} placeholder="URL Fondo" className="h-8 text-[10px]" />
+                          <div className="relative">
+                            <ImageIcon className="absolute left-2 top-1/2 -translate-y-1/2 text-gray-400" size={12} />
+                            <Input 
+                              value={editForm.image_url} 
+                              onChange={e => setEditForm({...editForm, image_url: e.target.value})} 
+                              placeholder="URL de la Foto" 
+                              className="h-8 pl-7 text-[10px] rounded-lg" 
+                            />
+                          </div>
+                          <Input value={editForm.video_url} onChange={e => setEditForm({...editForm, video_url: e.target.value})} placeholder="URL Video Presentación" className="h-8 text-[10px] rounded-lg" />
+                          <Input value={editForm.bg_video_url} onChange={e => setEditForm({...editForm, bg_video_url: e.target.value})} placeholder="URL Video Fondo" className="h-8 text-[10px] rounded-lg" />
                         </div>
                       ) : (
                         <div className="flex flex-col gap-1">
+                          <span className="text-[9px] font-bold text-gray-400 uppercase truncate">Foto: {c.image_url}</span>
                           <span className="text-[9px] font-bold text-gray-400 uppercase truncate">Video: {c.video_url}</span>
                           <span className="text-[9px] font-bold text-gray-400 uppercase truncate">Fondo: {c.bg_video_url}</span>
                         </div>
