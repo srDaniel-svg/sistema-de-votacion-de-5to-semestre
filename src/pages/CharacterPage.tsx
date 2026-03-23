@@ -16,6 +16,20 @@ const CharacterPage = () => {
   const [student, setStudent] = useState<any>(null);
   const [user, setUser] = useState<any>(null);
 
+  // Función para convertir cualquier URL de YouTube al formato /embed/
+  const getEmbedUrl = (url: string) => {
+    if (!url) return "";
+    if (url.includes("embed/")) return url;
+    
+    const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+    const match = url.match(regExp);
+    
+    if (match && match[2].length === 11) {
+      return `https://www.youtube.com/embed/${match[2]}`;
+    }
+    return url;
+  };
+
   useEffect(() => {
     const fetchData = async () => {
       const { data: { session } } = await supabase.auth.getSession();
@@ -46,14 +60,17 @@ const CharacterPage = () => {
 
   if (!student) return <div className="bg-black min-h-screen text-white flex items-center justify-center">Cargando...</div>;
 
+  const videoUrl = getEmbedUrl(student.video_url);
+  const bgVideoUrl = getEmbedUrl(student.bg_video_url);
+
   return (
     <div className="min-h-screen bg-black text-white overflow-x-hidden">
-      <VideoModal isOpen={isVideoOpen} onClose={() => setIsVideoOpen(false)} videoUrl={student.video_url} />
+      <VideoModal isOpen={isVideoOpen} onClose={() => setIsVideoOpen(false)} videoUrl={videoUrl} />
 
       <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden">
         <iframe
-          key={student.bg_video_url}
-          src={`${student.bg_video_url}&controls=0&showinfo=0&rel=0&autoplay=1&loop=1&mute=1`}
+          key={bgVideoUrl}
+          src={`${bgVideoUrl}?controls=0&showinfo=0&rel=0&autoplay=1&loop=1&mute=1&playlist=${bgVideoUrl.split('/').pop()}`}
           className="absolute top-1/2 left-1/2 w-[200%] h-[150%] md:w-[150%] -translate-x-1/2 -translate-y-1/2 border-none opacity-30 grayscale contrast-125"
           allow="autoplay; encrypted-media; fullscreen"
         />
@@ -72,7 +89,6 @@ const CharacterPage = () => {
         </div>
 
         <div className="flex-1 max-w-[1600px] mx-auto px-4 md:px-20 flex flex-col md:flex-row items-center justify-center md:justify-between py-8 md:py-12 gap-8 md:gap-0">
-          {/* Image Container */}
           <div className="relative w-full md:w-1/2 h-[40vh] sm:h-[50vh] md:h-[70vh] flex items-center justify-center">
             <div 
               className="relative w-full h-full transform md:-skew-x-6 overflow-hidden border-x-2 md:border-x-4 border-white/10 group cursor-pointer rounded-2xl md:rounded-none" 
@@ -88,7 +104,6 @@ const CharacterPage = () => {
             </div>
           </div>
 
-          {/* Info Container */}
           <div className="w-full md:w-1/2 flex flex-col items-center md:items-end text-center md:text-right space-y-4 md:space-y-6">
             <div className="md:text-right">
               <p className="text-red-600 font-black text-xs md:text-sm tracking-widest uppercase">Ranking No.</p>
@@ -118,7 +133,6 @@ const CharacterPage = () => {
           </div>
         </div>
 
-        {/* Ranking Grid at the bottom */}
         <div className="mt-12 md:mt-20 border-t border-white/10">
           <RankingGrid className="bg-transparent" showBackgroundX={false} />
         </div>
