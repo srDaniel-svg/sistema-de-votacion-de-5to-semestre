@@ -33,6 +33,8 @@ const RankingGrid = ({ className, showBackgroundX = true }: RankingGridProps) =>
 
   if (loading) return <div className="py-20 text-center font-black italic text-gray-400">CARGANDO RANKING...</div>;
 
+  const isDark = className?.includes('bg-transparent') || className?.includes('bg-black');
+
   return (
     <section className={cn("relative overflow-hidden", className)}>
       <div className="relative py-24">
@@ -40,10 +42,16 @@ const RankingGrid = ({ className, showBackgroundX = true }: RankingGridProps) =>
         
         <div className="max-w-[1400px] mx-auto px-4">
           <div className="mb-20 relative">
-            <h2 className="text-7xl md:text-9xl font-black opacity-5 absolute -top-12 left-0 select-none tracking-tighter">
+            <h2 className={cn(
+              "text-7xl md:text-9xl font-black absolute -top-12 left-0 select-none tracking-tighter",
+              isDark ? "opacity-10 text-white" : "opacity-5 text-black"
+            )}>
               CHARACTER
             </h2>
-            <h2 className="text-4xl md:text-6xl font-black relative z-10 italic flex items-center gap-4">
+            <h2 className={cn(
+              "text-4xl md:text-6xl font-black relative z-10 italic flex items-center gap-4",
+              isDark ? "text-white" : "text-black"
+            )}>
               <span className="w-12 h-1 bg-red-600" />
               TOP <span className="text-red-600">SISTEMAS</span>
             </h2>
@@ -52,7 +60,10 @@ const RankingGrid = ({ className, showBackgroundX = true }: RankingGridProps) =>
           <div className="flex flex-col gap-2">
             {/* Fila 1 (Top 1-5) */}
             <div className="flex flex-wrap items-center justify-center -space-x-4 md:-space-x-8">
-              <div className="hidden lg:block w-40 h-80 bg-black/5 backdrop-blur-sm transform -skew-x-12 border-x border-black/5" />
+              <div className={cn(
+                "hidden lg:block w-40 h-80 backdrop-blur-sm transform -skew-x-12 border-x",
+                isDark ? "bg-white/5 border-white/5" : "bg-black/5 border-black/5"
+              )} />
               {candidates.slice(0, 5).map((student) => (
                 <RankingCard 
                   key={student.id} 
@@ -61,7 +72,10 @@ const RankingGrid = ({ className, showBackgroundX = true }: RankingGridProps) =>
                   role={student.description || "Candidato"}
                   image={student.image_url}
                   className="w-full max-w-[180px] sm:max-w-[220px]"
-                  onClick={() => navigate(`/character/${student.rank}`)}
+                  onClick={() => {
+                    navigate(`/character/${student.rank}`);
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                  }}
                 />
               ))}
             </div>
@@ -76,10 +90,16 @@ const RankingGrid = ({ className, showBackgroundX = true }: RankingGridProps) =>
                   role={student.description || "Candidato"}
                   image={student.image_url}
                   className="w-full max-w-[180px] sm:max-w-[220px]"
-                  onClick={() => navigate(`/character/${student.rank}`)}
+                  onClick={() => {
+                    navigate(`/character/${student.rank}`);
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                  }}
                 />
               ))}
-              <div className="hidden lg:block w-40 h-80 bg-black/5 backdrop-blur-sm transform -skew-x-12 border-x border-black/5" />
+              <div className={cn(
+                "hidden lg:block w-40 h-80 backdrop-blur-sm transform -skew-x-12 border-x",
+                isDark ? "bg-white/5 border-white/5" : "bg-black/5 border-black/5"
+              )} />
             </div>
           </div>
         </div>

@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Play, ChevronLeft, ArrowDown, Heart, User } from 'lucide-react';
+import { Play, ChevronLeft, Heart } from 'lucide-react';
 import RankingGrid from '@/components/RankingGrid';
 import VideoModal from '@/components/VideoModal';
 import { showSuccess, showError } from '@/utils/toast';
@@ -100,6 +100,11 @@ const CharacterPage = () => {
               </button>
             </div>
           </div>
+        </div>
+
+        {/* Ranking Grid at the bottom */}
+        <div className="mt-20 border-t border-white/10">
+          <RankingGrid className="bg-transparent" showBackgroundX={false} />
         </div>
       </div>
     </div>
