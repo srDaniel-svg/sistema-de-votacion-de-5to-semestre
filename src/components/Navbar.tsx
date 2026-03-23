@@ -1,17 +1,19 @@
 "use client";
 
 import React from 'react';
-import { Monitor, Menu } from 'lucide-react';
+import { Menu } from 'lucide-react';
 
 const Navbar = () => {
   return (
     <nav className="fixed top-0 w-full z-50 bg-white/80 backdrop-blur-md border-b border-gray-100">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16 items-center">
-          <div className="flex items-center gap-2">
-            <div className="bg-red-600 p-1.5 rounded-lg">
-              <Monitor className="text-white" size={20} />
-            </div>
+          <div className="flex items-center gap-3">
+            <img 
+              src="/logo.png" 
+              alt="Logo UAGRM" 
+              className="h-10 w-auto object-contain"
+            />
             <span className="font-bold text-xl tracking-tight text-gray-900">
               SISTEMAS <span className="text-red-600">UAGRM</span>
             </span>
